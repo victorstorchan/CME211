@@ -1,10 +1,11 @@
+"""test"""
 # coding: utf-8
 
 
 
 
 #finduser outputs a list of 2-dimentional tuple. First entry :the user of the item j, second entry: the rate of the item.
-
+import sys
 def finduser(j,l):
     my_list1=[]
     m = len(l)
@@ -43,7 +44,7 @@ def moy(j,l):
 
 
 
-#note donnée par la kieme personne de bothij(a,b) à l'item a
+#rating given by the kth user of bothij(a,b) to the item a
 
 def note(k,a,b,l):
     r_ak =0
@@ -125,8 +126,8 @@ def funsimilarities(l, defaut):
         f=[]
         for j in range(len(make_couple_items_correl(l))):
             if make_couple_items_correl(l)[j][0][0]==list_mov[i]:
-                f.append([make_couple_items_correl(l)[j][0][1],make_couple_items_correl(l)[j][1]]) #dans f, on ajoute l'item comparé à i et son coeff
-        g1=[]
+                f.append([make_couple_items_correl(l)[j][0][1],make_couple_items_correl(l)[j][1]]) #in f we add the item compared to item i and its correlation coefficient
+        g1=[]       
         if defaut<len(f):
             for j in range(len(f)):
                 g1.append(f[j][1])
@@ -136,10 +137,11 @@ def funsimilarities(l, defaut):
             for j in range(len(f)):
                 if r0==f[j][1]:
                     r1 += int(f[j][0]) #r1 is the movie relative to the biggest coeff correl with repect to i
-            list_final.append([list_mov[i],[r1,r0,len(f)]])
+            list_final.append([list_mov[i],[r1,r0,len(bothij(list_mov[i],r1,l))]])
         else:
             list_final.append([list_mov[i],' '])
     return list_final
+        
         
             
 
@@ -155,10 +157,10 @@ def compline(MovieLens):
     return n
 
 
-
+import sys
 #final function: read and write
 import time
-def ecritsim(MovieLens,similarities,userthresh=5):
+def ecritsim(MovieLens,similarities,userthresh=0):
     t1=time.time()
     n=compline(MovieLens)
     h = open(MovieLens,'r')
@@ -176,8 +178,11 @@ def ecritsim(MovieLens,similarities,userthresh=5):
     g.close()
     t2=time.time()
     print('Input MovieLens file:{} \n Output file for similarity data:{}\n Minimum number of common users:{}\n Read {} lines with total of {} movies and {} users \n Computed simiarities in {} seconds '.format(MovieLens,similarities,userthresh,n,list(compt_movies(l))[1],compt_users(l),t2-t1))
-
-
-
-ecritsim('/Users/victorstorchan/Desktop/u.data.txt','/Users/victorstorchan/Desktop/similarities.txt')
-
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("Usage:\n $ python similarity.py <MovieLens file> <similarities file> [user thresh (default = 5)]") 
+        sys.exit()
+    if len(sys.argv)==3:        
+        ecritsim(sys.argv[1],sys.argv[2])
+    else:
+        ecritsim(sys.argv[1],sys.argv[2],sys.argv[3])
